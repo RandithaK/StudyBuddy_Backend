@@ -84,6 +84,7 @@ Seeded test user (for quick development):
 - Port: controlled by `PORT` env var (default 8080).
  - MongoDB: set `MONGO_URI` env var to a MongoDB URI (e.g., mongodb://localhost:27017). If set, the app will use MongoDB for persistence; otherwise it defaults to an in-memory store.
  - MongoDB: set `MONGO_URI` env var to a MongoDB URI (e.g., mongodb://localhost:27017). If set, the app will use MongoDB for persistence; otherwise it defaults to an in-memory store.
+ - MongoDB: set `MONGO_URI` env var to a MongoDB URI (e.g., mongodb://localhost:27017). If set, the app will use MongoDB for persistence; otherwise it defaults to an in-memory store.
 
 IMPORTANT: Never commit credentials directly into source. Set them via environment variables or a secret manager. Below is a sample **run-only** example where you might have been provided a URI (don't commit this into code):
 
@@ -105,6 +106,18 @@ go run .
 ```
 
 The app will use database `studybuddy` and seed collections on startup (tasks, courses, events, users).
+
+Dotenv (.env) support
+---------------------
+You can also create a `.env` file in the `StudyBuddy_Backend` folder with default values (see `.env.example` for the format).
+System environment variables (e.g. from your shell or CI) will always override values in `.env`.
+
+Example `.env` file:
+```
+MONGO_URI="mongodb://localhost:27017"
+JWT_SECRET="dev-secret"
+PORT="8080"
+```
 
 ## Next steps (optional)
 - Add persistent storage and migrations

@@ -9,10 +9,23 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func main() {
+	// Load .env file into env variables, but ensure system environment
+	// variables take precedence: for each var in .env, only set it if
+	// not already present in the OS environment. This allows local .env
+	// files to provide defaults while allowing system env vars to override.
+	if envMap, err := godotenv.Read(); err == nil {
+		for k, v := range envMap {
+			if os.Getenv(k) == "" {
+				os.Setenv(k, v)
+			}
+		}
+		log.Println("Loaded .env file (defaults applied; system env vars override)")
+	}
 	cfg := ServerConfig{
 		Addr:      getEnv("PORT", "8080"),
 		JWTSecret: getEnv("JWT_SECRET", "dev-secret"),
