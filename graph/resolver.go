@@ -1,6 +1,6 @@
 package graph
 
-import "github.com/RandithaK/StudyBuddy_Backend/internal/store"
+import "github.com/RandithaK/StudyBuddy_Backend/pkg/store"
 
 // This file will not be regenerated automatically.
 //

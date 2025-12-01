@@ -4,7 +4,7 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/RandithaK/StudyBuddy_Backend/internal/models"
+	"github.com/RandithaK/StudyBuddy_Backend/pkg/models"
 )
 
 var (

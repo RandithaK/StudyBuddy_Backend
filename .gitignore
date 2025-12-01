@@ -1,6 +1,5 @@
 # Go artifacts
 /bin/
-/pkg/
 
 # VSCode
 .vscode/

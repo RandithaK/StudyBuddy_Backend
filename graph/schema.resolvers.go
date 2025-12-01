@@ -12,9 +12,9 @@ import (
 	"time"
 
 	"github.com/RandithaK/StudyBuddy_Backend/graph/model"
-	"github.com/RandithaK/StudyBuddy_Backend/internal/auth"
-	"github.com/RandithaK/StudyBuddy_Backend/internal/email"
-	"github.com/RandithaK/StudyBuddy_Backend/internal/models"
+	"github.com/RandithaK/StudyBuddy_Backend/pkg/auth"
+	"github.com/RandithaK/StudyBuddy_Backend/pkg/email"
+	"github.com/RandithaK/StudyBuddy_Backend/pkg/models"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )

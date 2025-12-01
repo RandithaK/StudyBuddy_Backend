@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/RandithaK/StudyBuddy_Backend/internal/server"
+	"github.com/RandithaK/StudyBuddy_Backend/pkg/server"
 )
 
 // Handler is the entry point for Vercel

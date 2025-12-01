@@ -5,9 +5,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/RandithaK/StudyBuddy_Backend/internal/email"
-	"github.com/RandithaK/StudyBuddy_Backend/internal/models"
-	"github.com/RandithaK/StudyBuddy_Backend/internal/store"
+	"github.com/RandithaK/StudyBuddy_Backend/pkg/email"
+	"github.com/RandithaK/StudyBuddy_Backend/pkg/models"
+	"github.com/RandithaK/StudyBuddy_Backend/pkg/store"
 )
 
 type Worker struct {
