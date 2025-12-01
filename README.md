@@ -84,6 +84,22 @@ Seeded test user (for quick development):
 - Port: controlled by `PORT` env var (default 8080).
 - MongoDB: set `MONGO_URI` env var to a MongoDB URI (e.g., mongodb://localhost:27017). If set, the app will use MongoDB for persistence; otherwise it defaults to an in-memory store.
 
+## Production and deployed URL
+
+This app is also deployed to Vercel for production use. The production endpoint is:
+
+```
+https://study-buddy-backend-three.vercel.app/api/query
+```
+
+Use this URL from the mobile app (or anywhere else) to talk to your deployed server. To verify the deployed server is up, use:
+
+```sh
+curl https://study-buddy-backend-three.vercel.app/api/health
+```
+
+If you want to persist data in production, set `MONGO_URI` in your Vercel environment variables or your deployment pipeline before starting the server. This repo contains `.env.example` to illustrate the expected variables.
+
 IMPORTANT: Never commit credentials directly into source. Set them via environment variables or a secret manager. Below is a sample **run-only** example where you might have been provided a URI (don't commit this into code):
 
 ```bash
