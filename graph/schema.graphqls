@@ -1,0 +1,109 @@
+type User {
+  id: ID!
+  name: String!
+  email: String!
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+type Course {
+  id: ID!
+  name: String!
+  color: String!
+  totalTasks: Int!
+  completedTasks: Int!
+}
+
+type Task {
+  id: ID!
+  title: String!
+  description: String!
+  courseId: String!
+  course: Course
+  dueDate: String!
+  dueTime: String!
+  completed: Boolean!
+  hasReminder: Boolean!
+}
+
+type Event {
+  id: ID!
+  title: String!
+  courseId: String!
+  course: Course
+  date: String!
+  startTime: String!
+  endTime: String!
+  type: String!
+}
+
+input RegisterInput {
+  name: String!
+  email: String!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input NewCourseInput {
+  name: String!
+  color: String!
+}
+
+input NewTaskInput {
+  title: String!
+  description: String!
+  courseId: String!
+  dueDate: String!
+  dueTime: String!
+  hasReminder: Boolean!
+}
+
+input UpdateTaskInput {
+  id: ID!
+  title: String
+  description: String
+  courseId: String
+  dueDate: String
+  dueTime: String
+  completed: Boolean
+  hasReminder: Boolean
+}
+
+input NewEventInput {
+  title: String!
+  courseId: String!
+  date: String!
+  startTime: String!
+  endTime: String!
+  type: String!
+}
+
+type Query {
+  me: User!
+  tasks: [Task!]!
+  courses: [Course!]!
+  events: [Event!]!
+  getTask(id: ID!): Task
+  getCourse(id: ID!): Course
+}
+
+type Mutation {
+  register(input: RegisterInput!): AuthPayload!
+  login(input: LoginInput!): AuthPayload!
+  
+  createCourse(input: NewCourseInput!): Course!
+  
+  createTask(input: NewTaskInput!): Task!
+  updateTask(input: UpdateTaskInput!): Task!
+  deleteTask(id: ID!): Boolean!
+  
+  createEvent(input: NewEventInput!): Event!
+  deleteEvent(id: ID!): Boolean!
+}

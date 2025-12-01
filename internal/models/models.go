@@ -1,4 +1,4 @@
-package main
+package models
 
 import "time"
 
@@ -8,6 +8,7 @@ type Task struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	CourseID    string `json:"courseId"`
+	UserID      string `json:"userId" bson:"userId"`
 	DueDate     string `json:"dueDate"`
 	DueTime     string `json:"dueTime"`
 	Completed   bool   `json:"completed"`
@@ -19,6 +20,7 @@ type Course struct {
 	ID             string `json:"id" bson:"id"`
 	Name           string `json:"name"`
 	Color          string `json:"color"`
+	UserID         string `json:"userId" bson:"userId"`
 	TotalTasks     int    `json:"totalTasks"`
 	CompletedTasks int    `json:"completedTasks"`
 }
@@ -28,6 +30,7 @@ type Event struct {
 	ID        string `json:"id" bson:"id"`
 	Title     string `json:"title"`
 	CourseID  string `json:"courseId"`
+	UserID    string `json:"userId" bson:"userId"`
 	Date      string `json:"date"`
 	StartTime string `json:"startTime"`
 	EndTime   string `json:"endTime"`

@@ -1,4 +1,4 @@
-package main
+package store
 
 import (
 	"context"
@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/RandithaK/StudyBuddy/backend/internal/models"
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -51,18 +52,18 @@ func toObjectID(id string) (primitive.ObjectID, error) {
 }
 
 // MongoStore implements Store
-func (m *MongoStore) GetTasks() []Task {
+func (m *MongoStore) GetTasks(userID string) []models.Task {
 	col := m.db.Collection("tasks")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	cur, err := col.Find(ctx, bson.M{})
+	cur, err := col.Find(ctx, bson.M{"userId": userID})
 	if err != nil {
-		return []Task{}
+		return []models.Task{}
 	}
 	defer cur.Close(ctx)
-	var res []Task
+	var res []models.Task
 	for cur.Next(ctx) {
-		var t Task
+		var t models.Task
 		if err := cur.Decode(&t); err == nil {
 			res = append(res, t)
 		}
@@ -70,26 +71,26 @@ func (m *MongoStore) GetTasks() []Task {
 	return res
 }
 
-func (m *MongoStore) GetTask(id string) (Task, error) {
+func (m *MongoStore) GetTask(id string) (models.Task, error) {
 	col := m.db.Collection("tasks")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	// try to search by id field
-	var t Task
+	var t models.Task
 	res := col.FindOne(ctx, bson.M{"id": id})
 	if err := res.Err(); err != nil {
 		if err == mongo.ErrNoDocuments {
-			return Task{}, ErrNotFound
+			return models.Task{}, ErrNotFound
 		}
-		return Task{}, err
+		return models.Task{}, err
 	}
 	if err := res.Decode(&t); err != nil {
-		return Task{}, err
+		return models.Task{}, err
 	}
 	return t, nil
 }
 
-func (m *MongoStore) CreateTask(t Task) Task {
+func (m *MongoStore) CreateTask(t models.Task) models.Task {
 	col := m.db.Collection("tasks")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -100,17 +101,17 @@ func (m *MongoStore) CreateTask(t Task) Task {
 	return t
 }
 
-func (m *MongoStore) UpdateTask(id string, t Task) (Task, error) {
+func (m *MongoStore) UpdateTask(id string, t models.Task) (models.Task, error) {
 	col := m.db.Collection("tasks")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	t.ID = id
 	res, err := col.ReplaceOne(ctx, bson.M{"id": id}, t)
 	if err != nil {
-		return Task{}, err
+		return models.Task{}, err
 	}
 	if res.MatchedCount == 0 {
-		return Task{}, ErrNotFound
+		return models.Task{}, ErrNotFound
 	}
 	return t, nil
 }
@@ -130,18 +131,18 @@ func (m *MongoStore) DeleteTask(id string) error {
 }
 
 // Courses
-func (m *MongoStore) GetCourses() []Course {
+func (m *MongoStore) GetCourses(userID string) []models.Course {
 	col := m.db.Collection("courses")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	cur, err := col.Find(ctx, bson.M{})
+	cur, err := col.Find(ctx, bson.M{"userId": userID})
 	if err != nil {
-		return []Course{}
+		return []models.Course{}
 	}
 	defer cur.Close(ctx)
-	var res []Course
+	var res []models.Course
 	for cur.Next(ctx) {
-		var c Course
+		var c models.Course
 		if err := cur.Decode(&c); err == nil {
 			res = append(res, c)
 		}
@@ -149,7 +150,25 @@ func (m *MongoStore) GetCourses() []Course {
 	return res
 }
 
-func (m *MongoStore) CreateCourse(c Course) Course {
+func (m *MongoStore) GetCourse(id string) (models.Course, error) {
+	col := m.db.Collection("courses")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	var c models.Course
+	res := col.FindOne(ctx, bson.M{"id": id})
+	if err := res.Err(); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return models.Course{}, ErrNotFound
+		}
+		return models.Course{}, err
+	}
+	if err := res.Decode(&c); err != nil {
+		return models.Course{}, err
+	}
+	return c, nil
+}
+
+func (m *MongoStore) CreateCourse(c models.Course) models.Course {
 	col := m.db.Collection("courses")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -161,18 +180,18 @@ func (m *MongoStore) CreateCourse(c Course) Course {
 }
 
 // Events
-func (m *MongoStore) GetEvents() []Event {
+func (m *MongoStore) GetEvents(userID string) []models.Event {
 	col := m.db.Collection("events")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	cur, err := col.Find(ctx, bson.M{})
+	cur, err := col.Find(ctx, bson.M{"userId": userID})
 	if err != nil {
-		return []Event{}
+		return []models.Event{}
 	}
 	defer cur.Close(ctx)
-	var res []Event
+	var res []models.Event
 	for cur.Next(ctx) {
-		var e Event
+		var e models.Event
 		if err := cur.Decode(&e); err == nil {
 			res = append(res, e)
 		}
@@ -180,7 +199,7 @@ func (m *MongoStore) GetEvents() []Event {
 	return res
 }
 
-func (m *MongoStore) CreateEvent(e Event) Event {
+func (m *MongoStore) CreateEvent(e models.Event) models.Event {
 	col := m.db.Collection("events")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -192,40 +211,40 @@ func (m *MongoStore) CreateEvent(e Event) Event {
 }
 
 // Users
-func (m *MongoStore) GetUser(id string) (User, error) {
+func (m *MongoStore) GetUser(id string) (models.User, error) {
 	col := m.db.Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	var u User
+	var u models.User
 	res := col.FindOne(ctx, bson.M{"id": id})
 	if err := res.Err(); err != nil {
 		if err == mongo.ErrNoDocuments {
-			return User{}, ErrNotFound
+			return models.User{}, ErrNotFound
 		}
-		return User{}, err
+		return models.User{}, err
 	}
 	if err := res.Decode(&u); err != nil {
-		return User{}, err
+		return models.User{}, err
 	}
 	return u, nil
 }
 
-func (m *MongoStore) GetUserByEmail(email string) (User, bool) {
+func (m *MongoStore) GetUserByEmail(email string) (models.User, bool) {
 	col := m.db.Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	var u User
+	var u models.User
 	res := col.FindOne(ctx, bson.M{"email": email})
 	if err := res.Err(); err != nil {
-		return User{}, false
+		return models.User{}, false
 	}
 	if err := res.Decode(&u); err != nil {
-		return User{}, false
+		return models.User{}, false
 	}
 	return u, true
 }
 
-func (m *MongoStore) CreateUser(u User) User {
+func (m *MongoStore) CreateUser(u models.User) models.User {
 	col := m.db.Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
