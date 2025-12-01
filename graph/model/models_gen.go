@@ -11,6 +11,16 @@ type AuthPayload struct {
 	User  *models.User `json:"user"`
 }
 
+type ChangePasswordInput struct {
+	CurrentPassword string `json:"currentPassword"`
+	NewPassword     string `json:"newPassword"`
+}
+
+type ChangePasswordPayload struct {
+	Success bool   `json:"success"`
+	Message string `json:"message"`
+}
+
 type LoginInput struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
@@ -25,12 +35,13 @@ type NewCourseInput struct {
 }
 
 type NewEventInput struct {
-	Title     string `json:"title"`
-	CourseID  string `json:"courseId"`
-	Date      string `json:"date"`
-	StartTime string `json:"startTime"`
-	EndTime   string `json:"endTime"`
-	Type      string `json:"type"`
+	Title       string  `json:"title"`
+	Description *string `json:"description,omitempty"`
+	CourseID    *string `json:"courseId,omitempty"`
+	Date        string  `json:"date"`
+	StartTime   string  `json:"startTime"`
+	EndTime     string  `json:"endTime"`
+	Type        string  `json:"type"`
 }
 
 type NewTaskInput struct {
@@ -43,6 +54,16 @@ type NewTaskInput struct {
 }
 
 type Query struct {
+}
+
+type Notification struct {
+	ID          string `json:"id"`
+	UserID      string `json:"userId"`
+	Message     string `json:"message"`
+	Type        string `json:"type"`
+	ReferenceID string `json:"referenceId"`
+	Read        bool   `json:"read"`
+	CreatedAt   string `json:"createdAt"`
 }
 
 type RegisterInput struct {
@@ -60,4 +81,10 @@ type UpdateTaskInput struct {
 	DueTime     *string `json:"dueTime,omitempty"`
 	Completed   *bool   `json:"completed,omitempty"`
 	HasReminder *bool   `json:"hasReminder,omitempty"`
+	CompletedAt *string `json:"completedAt,omitempty"`
+}
+
+type UpdateUserInput struct {
+	Name  *string `json:"name,omitempty"`
+	Email *string `json:"email,omitempty"`
 }

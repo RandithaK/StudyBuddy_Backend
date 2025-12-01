@@ -167,3 +167,5 @@ models:
     model: github.com/RandithaK/StudyBuddy/backend/internal/models.Course
   Event:
     model: github.com/RandithaK/StudyBuddy/backend/internal/models.Event
+  Notification:
+    model: github.com/RandithaK/StudyBuddy/backend/internal/models.Notification

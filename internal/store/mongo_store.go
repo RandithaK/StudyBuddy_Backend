@@ -144,6 +144,26 @@ func (m *MongoStore) GetCourses(userID string) []models.Course {
 	for cur.Next(ctx) {
 		var c models.Course
 		if err := cur.Decode(&c); err == nil {
+			// Calculate totalTasks and completedTasks for this course
+			tasksCol := m.db.Collection("tasks")
+			tasksCtx, tasksCancel := context.WithTimeout(context.Background(), 5*time.Second)
+
+			// Count total tasks for this course
+			totalCount, _ := tasksCol.CountDocuments(tasksCtx, bson.M{
+				"userId":   userID,
+				"courseId": c.ID,
+			})
+			c.TotalTasks = int(totalCount)
+
+			// Count completed tasks for this course
+			completedCount, _ := tasksCol.CountDocuments(tasksCtx, bson.M{
+				"userId":    userID,
+				"courseId":  c.ID,
+				"completed": true,
+			})
+			c.CompletedTasks = int(completedCount)
+
+			tasksCancel()
 			res = append(res, c)
 		}
 	}
@@ -244,6 +264,24 @@ func (m *MongoStore) GetUserByEmail(email string) (models.User, bool) {
 	return u, true
 }
 
+func (m *MongoStore) GetUserByVerificationToken(token string) (models.User, error) {
+	col := m.db.Collection("users")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	var u models.User
+	res := col.FindOne(ctx, bson.M{"verificationToken": token})
+	if err := res.Err(); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return models.User{}, ErrNotFound
+		}
+		return models.User{}, err
+	}
+	if err := res.Decode(&u); err != nil {
+		return models.User{}, err
+	}
+	return u, nil
+}
+
 func (m *MongoStore) CreateUser(u models.User) models.User {
 	col := m.db.Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -253,4 +291,287 @@ func (m *MongoStore) CreateUser(u models.User) models.User {
 	}
 	_, _ = col.InsertOne(ctx, u)
 	return u
+}
+
+func (m *MongoStore) UpdateUser(id string, u models.User) (models.User, error) {
+	col := m.db.Collection("users")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// Ensure we don't overwrite the ID or Email if not intended, but here we expect u to have updated fields
+	// For safety, let's just update Name and Email if provided.
+	// However, the interface takes a User model. Let's assume the caller prepares the User object correctly.
+	// But wait, we need to be careful about not clearing other fields if we had them (like Password).
+	// The current User model only has ID, Name, Email, Password.
+	// We should probably fetch the existing user first to preserve the password if it's not being updated,
+	// or assume the caller handles it.
+	// Given the plan "UpdateUser(id string, u models.User)", let's do a replacement or partial update.
+	// A partial update is safer.
+
+	update := bson.M{}
+	if u.Name != "" {
+		update["name"] = u.Name
+	}
+	if u.Email != "" {
+		update["email"] = u.Email
+	}
+	if u.IsVerified {
+		update["isVerified"] = u.IsVerified
+	}
+	if u.VerificationToken != "" {
+		update["verificationToken"] = u.VerificationToken
+	}
+	// We explicitly don't update password here for now as it wasn't in the requirements,
+	// but if we needed to, we would.
+
+	if len(update) == 0 {
+		return models.User{}, nil // Nothing to update
+	}
+
+	res, err := col.UpdateOne(ctx, bson.M{"id": id}, bson.M{"$set": update})
+	if err != nil {
+		return models.User{}, err
+	}
+	if res.MatchedCount == 0 {
+		return models.User{}, ErrNotFound
+	}
+
+	// Return the updated user
+	return m.GetUser(id)
+}
+
+func (m *MongoStore) UpdateUserPassword(id string, hashedPassword string) (models.User, error) {
+	col := m.db.Collection("users")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	update := bson.M{"password": hashedPassword}
+	res, err := col.UpdateOne(ctx, bson.M{"id": id}, bson.M{"$set": update})
+	if err != nil {
+		return models.User{}, err
+	}
+	if res.MatchedCount == 0 {
+		return models.User{}, ErrNotFound
+	}
+	return m.GetUser(id)
+}
+
+func (m *MongoStore) MarkUserVerified(id string) error {
+	col := m.db.Collection("users")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	update := bson.M{
+		"isVerified":        true,
+		"verificationToken": "",
+	}
+
+	res, err := col.UpdateOne(ctx, bson.M{"id": id}, bson.M{"$set": update})
+	if err != nil {
+		return err
+	}
+	if res.MatchedCount == 0 {
+		return ErrNotFound
+	}
+	return nil
+}
+
+// Notifications
+func (m *MongoStore) GetNotifications(userID string) []models.Notification {
+	col := m.db.Collection("notifications")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// Sort by createdAt desc
+	opts := options.Find().SetSort(bson.D{{Key: "createdAt", Value: -1}})
+
+	cur, err := col.Find(ctx, bson.M{"userId": userID}, opts)
+	if err != nil {
+		return []models.Notification{}
+	}
+	defer cur.Close(ctx)
+	var res []models.Notification
+	for cur.Next(ctx) {
+		var n models.Notification
+		if err := cur.Decode(&n); err == nil {
+			res = append(res, n)
+		}
+	}
+	return res
+}
+
+func (m *MongoStore) GetNotificationByReferenceID(refID string, nType string) (models.Notification, error) {
+	col := m.db.Collection("notifications")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	var n models.Notification
+	err := col.FindOne(ctx, bson.M{"referenceId": refID, "type": nType}).Decode(&n)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return models.Notification{}, ErrNotFound
+		}
+		return models.Notification{}, err
+	}
+	return n, nil
+}
+
+func (m *MongoStore) CreateNotification(n models.Notification) models.Notification {
+	col := m.db.Collection("notifications")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if n.ID == "" {
+		n.ID = uuid.New().String()
+	}
+	if n.CreatedAt == "" {
+		n.CreatedAt = time.Now().Format(time.RFC3339)
+	}
+	_, _ = col.InsertOne(ctx, n)
+	return n
+}
+
+func (m *MongoStore) MarkNotificationAsRead(id string) error {
+	col := m.db.Collection("notifications")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	res, err := col.UpdateOne(ctx, bson.M{"id": id}, bson.M{"$set": bson.M{"read": true}})
+	if err != nil {
+		return err
+	}
+	if res.MatchedCount == 0 {
+		return ErrNotFound
+	}
+	return nil
+}
+
+func (m *MongoStore) GetUnreadNotificationsOlderThan(duration string) ([]models.Notification, error) {
+	col := m.db.Collection("notifications")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	d, err := time.ParseDuration(duration)
+	if err != nil {
+		return nil, err
+	}
+	cutoff := time.Now().Add(-d).Format(time.RFC3339)
+
+	// Find unread notifications created before cutoff and not yet emailed
+	filter := bson.M{
+		"read":      false,
+		"emailed":   false,
+		"createdAt": bson.M{"$lt": cutoff},
+	}
+
+	cur, err := col.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cur.Close(ctx)
+	var res []models.Notification
+	for cur.Next(ctx) {
+		var n models.Notification
+		if err := cur.Decode(&n); err == nil {
+			res = append(res, n)
+		}
+	}
+	return res, nil
+}
+
+func (m *MongoStore) MarkNotificationAsEmailed(id string) error {
+	col := m.db.Collection("notifications")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	_, err := col.UpdateOne(ctx, bson.M{"id": id}, bson.M{"$set": bson.M{"emailed": true}})
+	return err
+}
+
+// Worker Helpers
+func (m *MongoStore) GetTasksDueIn(duration string) ([]models.Task, error) {
+	col := m.db.Collection("tasks")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	d, err := time.ParseDuration(duration)
+	if err != nil {
+		return nil, err
+	}
+
+	// We want tasks due between now and now+duration
+	now := time.Now()
+	target := now.Add(d)
+
+	// Assuming DueDate is "YYYY-MM-DD" and DueTime is "HH:MM"
+	// This is a bit tricky with string dates.
+	// Let's assume we can construct a comparable string or we need to fetch and filter.
+	// Fetching all incomplete tasks and filtering in Go is safer for string dates if dataset isn't huge.
+	// Or we can rely on strict format.
+
+	// Let's fetch all incomplete tasks and filter in memory for simplicity and correctness with string formats
+	cur, err := col.Find(ctx, bson.M{"completed": false})
+	if err != nil {
+		return nil, err
+	}
+	defer cur.Close(ctx)
+
+	var res []models.Task
+	for cur.Next(ctx) {
+		var t models.Task
+		if err := cur.Decode(&t); err == nil {
+			// Parse due date/time
+			// Format: 2023-10-27 14:30
+			dueStr := t.DueDate + " " + t.DueTime
+			due, err := time.Parse("2006-01-02 15:04", dueStr)
+			if err == nil {
+				// Check if due is within the range [now, target]
+				// Also check if we already notified?
+				// The requirement says "before 24 hours".
+				// We probably need a flag on Task or check if a notification exists.
+				// Checking if notification exists is expensive.
+				// Let's assume we run this periodically and we want to catch tasks due in ~24h.
+				// To avoid duplicates, we can check if we are close to the 24h mark (e.g. 23h-24h window)
+				// OR we can add a "Notified24h" flag to Task.
+				// Adding a flag is better. But I can't easily change the schema right now without more files.
+				// Let's check if notification exists for this task with type TASK_DUE.
+
+				if due.After(now) && due.Before(target) {
+					res = append(res, t)
+				}
+			}
+		}
+	}
+	return res, nil
+}
+
+func (m *MongoStore) GetEventsStartingIn(duration string) ([]models.Event, error) {
+	col := m.db.Collection("events")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	d, err := time.ParseDuration(duration)
+	if err != nil {
+		return nil, err
+	}
+
+	now := time.Now()
+	target := now.Add(d)
+
+	cur, err := col.Find(ctx, bson.M{})
+	if err != nil {
+		return nil, err
+	}
+	defer cur.Close(ctx)
+
+	var res []models.Event
+	for cur.Next(ctx) {
+		var e models.Event
+		if err := cur.Decode(&e); err == nil {
+			startStr := e.Date + " " + e.StartTime
+			start, err := time.Parse("2006-01-02 15:04", startStr)
+			if err == nil {
+				if start.After(now) && start.Before(target) {
+					res = append(res, e)
+				}
+			}
+		}
+	}
+	return res, nil
 }

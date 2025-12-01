@@ -2,6 +2,7 @@ type User {
   id: ID!
   name: String!
   email: String!
+  isVerified: Boolean!
 }
 
 type AuthPayload {
@@ -27,11 +28,13 @@ type Task {
   dueTime: String!
   completed: Boolean!
   hasReminder: Boolean!
+  completedAt: String
 }
 
 type Event {
   id: ID!
   title: String!
+  description: String
   courseId: String!
   course: Course
   date: String!
@@ -74,11 +77,13 @@ input UpdateTaskInput {
   dueTime: String
   completed: Boolean
   hasReminder: Boolean
+  completedAt: String
 }
 
 input NewEventInput {
   title: String!
-  courseId: String!
+  description: String
+  courseId: String
   date: String!
   startTime: String!
   endTime: String!
@@ -92,6 +97,7 @@ type Query {
   events: [Event!]!
   getTask(id: ID!): Task
   getCourse(id: ID!): Course
+  notifications: [Notification!]!
 }
 
 type Mutation {
@@ -106,4 +112,34 @@ type Mutation {
   
   createEvent(input: NewEventInput!): Event!
   deleteEvent(id: ID!): Boolean!
+
+  updateUser(input: UpdateUserInput!): User!
+  changePassword(input: ChangePasswordInput!): ChangePasswordPayload!
+  
+  markNotificationAsRead(id: ID!): Boolean!
+}
+
+type Notification {
+  id: ID!
+  userId: String!
+  message: String!
+  type: String!
+  referenceId: String!
+  read: Boolean!
+  createdAt: String!
+}
+
+input UpdateUserInput {
+  name: String
+  email: String
+}
+
+input ChangePasswordInput {
+  currentPassword: String!
+  newPassword: String!
+}
+
+type ChangePasswordPayload {
+  success: Boolean!
+  message: String!
 }

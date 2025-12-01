@@ -27,7 +27,23 @@ type Store interface {
 	// Users
 	GetUser(id string) (models.User, error)
 	GetUserByEmail(email string) (models.User, bool)
+	GetUserByVerificationToken(token string) (models.User, error)
 	CreateUser(u models.User) models.User
+	UpdateUser(id string, u models.User) (models.User, error)
+	UpdateUserPassword(id string, hashedPassword string) (models.User, error)
+	MarkUserVerified(id string) error
+
+	// Notifications
+	GetNotifications(userID string) []models.Notification
+	GetNotificationByReferenceID(refID string, nType string) (models.Notification, error)
+	CreateNotification(n models.Notification) models.Notification
+	MarkNotificationAsRead(id string) error
+	GetUnreadNotificationsOlderThan(duration string) ([]models.Notification, error)
+	MarkNotificationAsEmailed(id string) error
+
+	// Worker Helpers
+	GetTasksDueIn(duration string) ([]models.Task, error)
+	GetEventsStartingIn(duration string) ([]models.Event, error)
 }
 
 // NewStore returns a Store implementation. If MONGO_URI is provided, a MongoStore will be used.

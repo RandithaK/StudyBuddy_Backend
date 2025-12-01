@@ -86,6 +86,19 @@ func (s *InMemoryStore) GetCourses(userID string) []models.Course {
 	res := make([]models.Course, 0, len(s.courses))
 	for _, c := range s.courses {
 		if c.UserID == userID {
+			// Calculate totalTasks and completedTasks for this course
+			totalTasks := 0
+			completedTasks := 0
+			for _, t := range s.tasks {
+				if t.UserID == userID && t.CourseID == c.ID {
+					totalTasks++
+					if t.Completed {
+						completedTasks++
+					}
+				}
+			}
+			c.TotalTasks = totalTasks
+			c.CompletedTasks = completedTasks
 			res = append(res, c)
 		}
 	}
@@ -154,4 +167,101 @@ func (s *InMemoryStore) CreateUser(u models.User) models.User {
 	defer s.mu.Unlock()
 	s.users[u.ID] = u
 	return u
+}
+
+func (s *InMemoryStore) GetUserByVerificationToken(token string) (models.User, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	for _, u := range s.users {
+		if u.VerificationToken == token {
+			return u, nil
+		}
+	}
+	return models.User{}, ErrNotFound
+}
+
+func (s *InMemoryStore) UpdateUser(id string, u models.User) (models.User, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	existing, ok := s.users[id]
+	if !ok {
+		return models.User{}, ErrNotFound
+	}
+
+	if u.Name != "" {
+		existing.Name = u.Name
+	}
+	if u.Email != "" {
+		existing.Email = u.Email
+	}
+	if u.IsVerified {
+		existing.IsVerified = u.IsVerified
+	}
+	if u.VerificationToken != "" {
+		existing.VerificationToken = u.VerificationToken
+	}
+
+	s.users[id] = existing
+	return existing, nil
+}
+
+func (s *InMemoryStore) UpdateUserPassword(id string, hashedPassword string) (models.User, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	existing, ok := s.users[id]
+	if !ok {
+		return models.User{}, ErrNotFound
+	}
+	if hashedPassword == "" {
+		return models.User{}, nil // nothing to update
+	}
+	existing.Password = hashedPassword
+	s.users[id] = existing
+	return existing, nil
+}
+
+func (s *InMemoryStore) MarkUserVerified(id string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	existing, ok := s.users[id]
+	if !ok {
+		return ErrNotFound
+	}
+	existing.IsVerified = true
+	existing.VerificationToken = ""
+	s.users[id] = existing
+	return nil
+}
+
+// Notifications (Stub implementation for InMemoryStore)
+func (s *InMemoryStore) GetNotifications(userID string) []models.Notification {
+	return []models.Notification{}
+}
+
+func (s *InMemoryStore) GetNotificationByReferenceID(refID string, nType string) (models.Notification, error) {
+	return models.Notification{}, ErrNotFound
+}
+
+func (s *InMemoryStore) CreateNotification(n models.Notification) models.Notification {
+	return n
+}
+
+func (s *InMemoryStore) MarkNotificationAsRead(id string) error {
+	return nil
+}
+
+func (s *InMemoryStore) GetUnreadNotificationsOlderThan(duration string) ([]models.Notification, error) {
+	return []models.Notification{}, nil
+}
+
+func (s *InMemoryStore) MarkNotificationAsEmailed(id string) error {
+	return nil
+}
+
+func (s *InMemoryStore) GetTasksDueIn(duration string) ([]models.Task, error) {
+	return []models.Task{}, nil
+}
+
+func (s *InMemoryStore) GetEventsStartingIn(duration string) ([]models.Event, error) {
+	return []models.Event{}, nil
 }
