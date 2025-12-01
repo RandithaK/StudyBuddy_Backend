@@ -10,15 +10,16 @@ import (
 
 	"github.com/RandithaK/StudyBuddy/backend/internal/models"
 	"github.com/RandithaK/StudyBuddy/backend/internal/store"
+	"github.com/RandithaK/StudyBuddy/backend/internal/server"
 	"github.com/google/uuid"
 )
 
 func TestHealthAndGetTasks(t *testing.T) {
 	ctx := context.Background()
 	s, _ := store.NewStore(ctx, "")
-	seedStore(s)
+	server.SeedStore(s)
 
-	r := SetupRouter(s, "8081")
+	r := server.SetupRouter(s)
 
 	// Health
 	req := httptest.NewRequest(http.MethodGet, "/api/health", nil)
@@ -48,7 +49,7 @@ func TestEmailVerification(t *testing.T) {
 	// 2. Verify email
 	req := httptest.NewRequest(http.MethodGet, "/verify-email?token="+token, nil)
 	rr := httptest.NewRecorder()
-	r := SetupRouter(s, "8081")
+	r := server.SetupRouter(s)
 	r.ServeHTTP(rr, req)
 
 	if rr.Code != http.StatusOK {
@@ -71,8 +72,8 @@ func TestEmailVerification(t *testing.T) {
 func TestChangePassword(t *testing.T) {
 	ctx := context.Background()
 	s, _ := store.NewStore(ctx, "")
-	seedStore(s)
-	r := SetupRouter(s, "8081")
+	server.SeedStore(s)
+	r := server.SetupRouter(s)
 
 	// 1. Login with seeded test user
 	loginBody := `{"query":"mutation Login($input: LoginInput!){ login(input:$input){ token user{ id name email } } }","variables":{"input":{"email":"test@example.com","password":"password"}}}`
