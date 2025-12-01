@@ -82,9 +82,7 @@ Seeded test user (for quick development):
 - To persist or deploy, replace the store with a DB (Postgres, SQLite) and add migrations.
 - JWT secret: set `JWT_SECRET` env var. Default is `dev-secret`.
 - Port: controlled by `PORT` env var (default 8080).
- - MongoDB: set `MONGO_URI` env var to a MongoDB URI (e.g., mongodb://localhost:27017). If set, the app will use MongoDB for persistence; otherwise it defaults to an in-memory store.
- - MongoDB: set `MONGO_URI` env var to a MongoDB URI (e.g., mongodb://localhost:27017). If set, the app will use MongoDB for persistence; otherwise it defaults to an in-memory store.
- - MongoDB: set `MONGO_URI` env var to a MongoDB URI (e.g., mongodb://localhost:27017). If set, the app will use MongoDB for persistence; otherwise it defaults to an in-memory store.
+- MongoDB: set `MONGO_URI` env var to a MongoDB URI (e.g., mongodb://localhost:27017). If set, the app will use MongoDB for persistence; otherwise it defaults to an in-memory store.
 
 IMPORTANT: Never commit credentials directly into source. Set them via environment variables or a secret manager. Below is a sample **run-only** example where you might have been provided a URI (don't commit this into code):
 
