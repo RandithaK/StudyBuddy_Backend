@@ -11,10 +11,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/RandithaK/StudyBuddy/backend/graph/model"
-	"github.com/RandithaK/StudyBuddy/backend/internal/auth"
-	"github.com/RandithaK/StudyBuddy/backend/internal/email"
-	"github.com/RandithaK/StudyBuddy/backend/internal/models"
+	"github.com/RandithaK/StudyBuddy_Backend/graph/model"
+	"github.com/RandithaK/StudyBuddy_Backend/internal/auth"
+	"github.com/RandithaK/StudyBuddy_Backend/internal/email"
+	"github.com/RandithaK/StudyBuddy_Backend/internal/models"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )

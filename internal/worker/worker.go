@@ -5,9 +5,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/RandithaK/StudyBuddy/backend/internal/email"
-	"github.com/RandithaK/StudyBuddy/backend/internal/models"
-	"github.com/RandithaK/StudyBuddy/backend/internal/store"
+	"github.com/RandithaK/StudyBuddy_Backend/internal/email"
+	"github.com/RandithaK/StudyBuddy_Backend/internal/models"
+	"github.com/RandithaK/StudyBuddy_Backend/internal/store"
 )
 
 type Worker struct {
@@ -103,7 +103,7 @@ func (w *Worker) CheckUnreadNotifications() {
 		// Only send email if user is verified
 		if !user.IsVerified {
 			log.Printf("Skipping email for unverified user %s", user.Email)
-			// We still mark as emailed so we don't keep checking? 
+			// We still mark as emailed so we don't keep checking?
 			// Or we leave it as not emailed?
 			// If we leave it, we'll keep checking every minute.
 			// Better to mark it as emailed (or "processed") to avoid loop.

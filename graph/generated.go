@@ -14,8 +14,8 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/RandithaK/StudyBuddy/backend/graph/model"
-	"github.com/RandithaK/StudyBuddy/backend/internal/models"
+	"github.com/RandithaK/StudyBuddy_Backend/graph/model"
+	"github.com/RandithaK/StudyBuddy_Backend/internal/models"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )

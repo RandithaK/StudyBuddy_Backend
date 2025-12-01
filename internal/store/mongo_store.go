@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/RandithaK/StudyBuddy/backend/internal/models"
+	"github.com/RandithaK/StudyBuddy_Backend/internal/models"
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

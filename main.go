@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/RandithaK/StudyBuddy/backend/internal/server"
+	"github.com/RandithaK/StudyBuddy_Backend/internal/server"
 )
 
 func main() {

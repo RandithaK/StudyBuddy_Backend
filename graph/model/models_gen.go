@@ -3,7 +3,7 @@
 package model
 
 import (
-	"github.com/RandithaK/StudyBuddy/backend/internal/models"
+	"github.com/RandithaK/StudyBuddy_Backend/internal/models"
 )
 
 type AuthPayload struct {

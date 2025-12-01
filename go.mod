@@ -1,4 +1,4 @@
-module github.com/RandithaK/StudyBuddy/backend
+module github.com/RandithaK/StudyBuddy_Backend
 
 go 1.24.0
 

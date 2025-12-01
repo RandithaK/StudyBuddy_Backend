@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/RandithaK/StudyBuddy/backend/internal/models"
-	"github.com/RandithaK/StudyBuddy/backend/internal/server"
-	"github.com/RandithaK/StudyBuddy/backend/internal/store"
+	"github.com/RandithaK/StudyBuddy_Backend/internal/models"
+	"github.com/RandithaK/StudyBuddy_Backend/internal/server"
+	"github.com/RandithaK/StudyBuddy_Backend/internal/store"
 	"github.com/google/uuid"
 )
 

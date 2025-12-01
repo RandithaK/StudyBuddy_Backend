@@ -121,7 +121,7 @@ call_argument_directives_with_null: true
 # gqlgen will search for any type names in the schema in these go packages
 # if they match it will use them, otherwise it will generate them.
 autobind:
-#  - "github.com/RandithaK/StudyBuddy/backend/graph/model"
+#  - "github.com/RandithaK/StudyBuddy_Backend/graph/model"
 
 # This section declares type mapping between the GraphQL and go type systems
 #
@@ -160,12 +160,12 @@ models:
       - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int64
   User:
-    model: github.com/RandithaK/StudyBuddy/backend/internal/models.User
+    model: github.com/RandithaK/StudyBuddy_Backend/internal/models.User
   Task:
-    model: github.com/RandithaK/StudyBuddy/backend/internal/models.Task
+    model: github.com/RandithaK/StudyBuddy_Backend/internal/models.Task
   Course:
-    model: github.com/RandithaK/StudyBuddy/backend/internal/models.Course
+    model: github.com/RandithaK/StudyBuddy_Backend/internal/models.Course
   Event:
-    model: github.com/RandithaK/StudyBuddy/backend/internal/models.Event
+    model: github.com/RandithaK/StudyBuddy_Backend/internal/models.Event
   Notification:
-    model: github.com/RandithaK/StudyBuddy/backend/internal/models.Notification
+    model: github.com/RandithaK/StudyBuddy_Backend/internal/models.Notification

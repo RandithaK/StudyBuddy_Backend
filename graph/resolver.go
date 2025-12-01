@@ -1,12 +1,12 @@
 package graph
 
-import "github.com/RandithaK/StudyBuddy/backend/internal/store"
+import "github.com/RandithaK/StudyBuddy_Backend/internal/store"
 
 // This file will not be regenerated automatically.
 //
 // It serves as dependency injection for your app, add any dependencies you require
 // here.
 
-type Resolver struct{
+type Resolver struct {
 	Store store.Store
 }

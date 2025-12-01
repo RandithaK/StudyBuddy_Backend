@@ -3,7 +3,7 @@ package store
 import (
 	"context"
 
-	"github.com/RandithaK/StudyBuddy/backend/internal/models"
+	"github.com/RandithaK/StudyBuddy_Backend/internal/models"
 )
 
 // Store defines the repository interface used by handlers.
