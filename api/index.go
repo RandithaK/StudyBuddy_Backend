@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+
 	"github.com/RandithaK/StudyBuddy/backend/internal/server"
 )
 
@@ -9,7 +10,7 @@ import (
 func Handler(w http.ResponseWriter, r *http.Request) {
 	// Initialize the server (runs once)
 	server.Once.Do(server.Setup)
-	
+
 	// Serve request
 	if server.Router != nil {
 		server.Router.ServeHTTP(w, r)
