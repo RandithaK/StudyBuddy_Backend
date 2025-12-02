@@ -113,8 +113,13 @@ func SetupRouter(s store.Store) *mux.Router {
         `))
 	}).Methods(http.MethodGet)
 
+	// GraphQL playground and handlers
 	r.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	r.Handle("/query", srv)
+	// Support Vercel's /api/* route prefix in production deployments
+	// (e.g. https://<host>/api/query). This ensures requests made to
+	// '/api/query' are handled properly when the Vercel router passes through the path.
+	r.Handle("/api/query", srv)
 
 	return r
 }
