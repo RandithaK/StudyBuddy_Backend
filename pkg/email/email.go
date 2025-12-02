@@ -17,14 +17,19 @@ func SendVerificationEmail(toEmail, token string) error {
 	}
 
 	// If SMTP config is missing, just log it (for dev/testing without real SMTP)
+	baseURL := os.Getenv("BASE_URL")
+	if baseURL == "" {
+		baseURL = fmt.Sprintf("http://localhost:%s", port)
+	}
+
 	if smtpHost == "" || smtpUser == "" {
-		fmt.Printf("Mock Email to %s: Verify at http://localhost:%s/verify-email?token=%s\n", toEmail, port, token)
+		fmt.Printf("Mock Email to %s: Verify at %s/verify-email?token=%s\n", toEmail, baseURL, token)
 		return nil
 	}
 
 	auth := smtp.PlainAuth("", smtpUser, smtpPass, smtpHost)
 
-	link := fmt.Sprintf("http://localhost:%s/verify-email?token=%s", port, token)
+	link := fmt.Sprintf("%s/verify-email?token=%s", baseURL, token)
 	msg := []byte(fmt.Sprintf("To: %s\r\n"+
 		"Subject: Verify your email\r\n"+
 		"\r\n"+
