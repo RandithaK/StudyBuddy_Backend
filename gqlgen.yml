@@ -160,12 +160,12 @@ models:
       - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int64
   User:
-    model: github.com/RandithaK/StudyBuddy_Backend/internal/models.User
+    model: github.com/RandithaK/StudyBuddy_Backend/pkg/models.User
   Task:
-    model: github.com/RandithaK/StudyBuddy_Backend/internal/models.Task
+    model: github.com/RandithaK/StudyBuddy_Backend/pkg/models.Task
   Course:
-    model: github.com/RandithaK/StudyBuddy_Backend/internal/models.Course
+    model: github.com/RandithaK/StudyBuddy_Backend/pkg/models.Course
   Event:
-    model: github.com/RandithaK/StudyBuddy_Backend/internal/models.Event
+    model: github.com/RandithaK/StudyBuddy_Backend/pkg/models.Event
   Notification:
-    model: github.com/RandithaK/StudyBuddy_Backend/internal/models.Notification
+    model: github.com/RandithaK/StudyBuddy_Backend/pkg/models.Notification

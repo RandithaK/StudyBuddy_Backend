@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -161,6 +162,63 @@ func SetupRouter(s store.Store) *mux.Router {
 
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "Processed %d notifications", count)
+	}).Methods(http.MethodPost)
+
+	// Refresh Token Endpoint
+	r.HandleFunc("/refresh-token", func(w http.ResponseWriter, r *http.Request) {
+		type RefreshRequest struct {
+			RefreshToken string `json:"refreshToken"`
+		}
+		var req RefreshRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			http.Error(w, "Invalid request body", http.StatusBadRequest)
+			return
+		}
+
+		// Validate token signature
+		claims, err := auth.ValidateToken(req.RefreshToken)
+		if err != nil {
+			http.Error(w, "Invalid refresh token", http.StatusUnauthorized)
+			return
+		}
+
+		// Check if token matches DB (Revocation check)
+		user, err := s.GetUser(claims.UserID)
+		if err != nil {
+			http.Error(w, "User not found", http.StatusUnauthorized)
+			return
+		}
+
+		if user.RefreshToken != req.RefreshToken {
+			http.Error(w, "Invalid refresh token (revoked)", http.StatusUnauthorized)
+			return
+		}
+
+		// Generate new tokens
+		newAccessToken, err := auth.GenerateAccessToken(user.ID)
+		if err != nil {
+			http.Error(w, "Failed to generate token", http.StatusInternalServerError)
+			return
+		}
+		// Optional: Rotate refresh token
+		newRefreshToken, err := auth.GenerateRefreshToken(user.ID)
+		if err != nil {
+			http.Error(w, "Failed to generate token", http.StatusInternalServerError)
+			return
+		}
+
+		// Save new refresh token
+		user.RefreshToken = newRefreshToken
+		if _, err := s.UpdateUser(user.ID, user); err != nil {
+			http.Error(w, "Failed to update user", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]string{
+			"token":        newAccessToken,
+			"refreshToken": newRefreshToken,
+		})
 	}).Methods(http.MethodPost)
 
 	// GraphQL playground and handlers

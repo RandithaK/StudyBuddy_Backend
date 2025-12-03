@@ -44,7 +44,8 @@ type User struct {
 	ID       string `json:"id" bson:"id"`
 	Name     string `json:"name"`
 	Email             string `json:"email"`
-	Password          string `json:"-"` // hashed password
+	Password          string `json:"password" bson:"password"`
+	RefreshToken      string `json:"refreshToken,omitempty" bson:"refreshToken,omitempty"`
 	IsVerified        bool   `json:"isVerified" bson:"isVerified"`
 	VerificationToken string `json:"-" bson:"verificationToken"`
 }

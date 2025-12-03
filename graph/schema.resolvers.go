@@ -62,15 +62,26 @@ func (r *mutationResolver) Register(ctx context.Context, input model.RegisterInp
 		}
 	}()
 
-	// Generate token
-	token, err := auth.GenerateToken(createdUser.ID)
+	// Generate tokens
+	accessToken, err := auth.GenerateAccessToken(createdUser.ID)
+	if err != nil {
+		return nil, err
+	}
+	refreshToken, err := auth.GenerateRefreshToken(createdUser.ID)
 	if err != nil {
 		return nil, err
 	}
 
+	// Save refresh token
+	createdUser.RefreshToken = refreshToken
+	if _, err := r.Store.UpdateUser(createdUser.ID, createdUser); err != nil {
+		return nil, err
+	}
+
 	return &model.AuthPayload{
-		Token: token,
-		User:  &createdUser,
+		Token:        accessToken,
+		RefreshToken: refreshToken,
+		User:         &createdUser,
 	}, nil
 }
 
@@ -91,15 +102,26 @@ func (r *mutationResolver) Login(ctx context.Context, input model.LoginInput) (*
 	// 	return nil, errors.New("please verify your email")
 	// }
 
-	// Generate token
-	token, err := auth.GenerateToken(user.ID)
+	// Generate tokens
+	accessToken, err := auth.GenerateAccessToken(user.ID)
+	if err != nil {
+		return nil, err
+	}
+	refreshToken, err := auth.GenerateRefreshToken(user.ID)
 	if err != nil {
 		return nil, err
 	}
 
+	// Save refresh token
+	user.RefreshToken = refreshToken
+	if _, err := r.Store.UpdateUser(user.ID, user); err != nil {
+		return nil, err
+	}
+
 	return &model.AuthPayload{
-		Token: token,
-		User:  &user,
+		Token:        accessToken,
+		RefreshToken: refreshToken,
+		User:         &user,
 	}, nil
 }
 

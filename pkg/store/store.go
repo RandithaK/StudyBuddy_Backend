@@ -200,6 +200,9 @@ func (s *InMemoryStore) UpdateUser(id string, u models.User) (models.User, error
 	if u.VerificationToken != "" {
 		existing.VerificationToken = u.VerificationToken
 	}
+	if u.RefreshToken != "" {
+		existing.RefreshToken = u.RefreshToken
+	}
 
 	s.users[id] = existing
 	return existing, nil

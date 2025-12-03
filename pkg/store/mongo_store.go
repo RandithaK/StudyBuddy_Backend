@@ -321,6 +321,9 @@ func (m *MongoStore) UpdateUser(id string, u models.User) (models.User, error) {
 	if u.VerificationToken != "" {
 		update["verificationToken"] = u.VerificationToken
 	}
+	if u.RefreshToken != "" {
+		update["refreshToken"] = u.RefreshToken
+	}
 	// We explicitly don't update password here for now as it wasn't in the requirements,
 	// but if we needed to, we would.
 

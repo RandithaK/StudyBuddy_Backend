@@ -7,8 +7,9 @@ import (
 )
 
 type AuthPayload struct {
-	Token string       `json:"token"`
-	User  *models.User `json:"user"`
+	Token        string       `json:"token"`
+	RefreshToken string       `json:"refreshToken"`
+	User         *models.User `json:"user"`
 }
 
 type ChangePasswordInput struct {
@@ -54,16 +55,6 @@ type NewTaskInput struct {
 }
 
 type Query struct {
-}
-
-type Notification struct {
-	ID          string `json:"id"`
-	UserID      string `json:"userId"`
-	Message     string `json:"message"`
-	Type        string `json:"type"`
-	ReferenceID string `json:"referenceId"`
-	Read        bool   `json:"read"`
-	CreatedAt   string `json:"createdAt"`
 }
 
 type RegisterInput struct {

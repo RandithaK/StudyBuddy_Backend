@@ -15,8 +15,20 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func GenerateToken(userID string) (string, error) {
+func GenerateAccessToken(userID string) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
+	claims := &Claims{
+		UserID: userID,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expirationTime),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString(jwtSecret)
+}
+
+func GenerateRefreshToken(userID string) (string, error) {
+	expirationTime := time.Now().Add(30 * 24 * time.Hour) // 30 days
 	claims := &Claims{
 		UserID: userID,
 		RegisteredClaims: jwt.RegisteredClaims{

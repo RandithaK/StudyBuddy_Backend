@@ -51,8 +51,9 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	AuthPayload struct {
-		Token func(childComplexity int) int
-		User  func(childComplexity int) int
+		RefreshToken func(childComplexity int) int
+		Token        func(childComplexity int) int
+		User         func(childComplexity int) int
 	}
 
 	ChangePasswordPayload struct {
@@ -183,6 +184,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 	_ = ec
 	switch typeName + "." + field {
 
+	case "AuthPayload.refreshToken":
+		if e.complexity.AuthPayload.RefreshToken == nil {
+			break
+		}
+
+		return e.complexity.AuthPayload.RefreshToken(childComplexity), true
 	case "AuthPayload.token":
 		if e.complexity.AuthPayload.Token == nil {
 			break
@@ -734,7 +741,7 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 func (ec *executionContext) field_Mutation_changePassword_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNChangePasswordInput2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐChangePasswordInput)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNChangePasswordInput2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐChangePasswordInput)
 	if err != nil {
 		return nil, err
 	}
@@ -745,7 +752,7 @@ func (ec *executionContext) field_Mutation_changePassword_args(ctx context.Conte
 func (ec *executionContext) field_Mutation_createCourse_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNNewCourseInput2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐNewCourseInput)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNNewCourseInput2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐNewCourseInput)
 	if err != nil {
 		return nil, err
 	}
@@ -756,7 +763,7 @@ func (ec *executionContext) field_Mutation_createCourse_args(ctx context.Context
 func (ec *executionContext) field_Mutation_createEvent_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNNewEventInput2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐNewEventInput)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNNewEventInput2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐNewEventInput)
 	if err != nil {
 		return nil, err
 	}
@@ -767,7 +774,7 @@ func (ec *executionContext) field_Mutation_createEvent_args(ctx context.Context,
 func (ec *executionContext) field_Mutation_createTask_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNNewTaskInput2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐNewTaskInput)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNNewTaskInput2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐNewTaskInput)
 	if err != nil {
 		return nil, err
 	}
@@ -800,7 +807,7 @@ func (ec *executionContext) field_Mutation_deleteTask_args(ctx context.Context, 
 func (ec *executionContext) field_Mutation_login_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNLoginInput2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐLoginInput)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNLoginInput2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐLoginInput)
 	if err != nil {
 		return nil, err
 	}
@@ -822,7 +829,7 @@ func (ec *executionContext) field_Mutation_markNotificationAsRead_args(ctx conte
 func (ec *executionContext) field_Mutation_register_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNRegisterInput2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐRegisterInput)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNRegisterInput2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐRegisterInput)
 	if err != nil {
 		return nil, err
 	}
@@ -833,7 +840,7 @@ func (ec *executionContext) field_Mutation_register_args(ctx context.Context, ra
 func (ec *executionContext) field_Mutation_updateTask_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNUpdateTaskInput2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐUpdateTaskInput)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNUpdateTaskInput2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐUpdateTaskInput)
 	if err != nil {
 		return nil, err
 	}
@@ -844,7 +851,7 @@ func (ec *executionContext) field_Mutation_updateTask_args(ctx context.Context, 
 func (ec *executionContext) field_Mutation_updateUser_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNUpdateUserInput2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐUpdateUserInput)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNUpdateUserInput2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐUpdateUserInput)
 	if err != nil {
 		return nil, err
 	}
@@ -966,6 +973,35 @@ func (ec *executionContext) fieldContext_AuthPayload_token(_ context.Context, fi
 	return fc, nil
 }
 
+func (ec *executionContext) _AuthPayload_refreshToken(ctx context.Context, field graphql.CollectedField, obj *model.AuthPayload) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_AuthPayload_refreshToken,
+		func(ctx context.Context) (any, error) {
+			return obj.RefreshToken, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_AuthPayload_refreshToken(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AuthPayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _AuthPayload_user(ctx context.Context, field graphql.CollectedField, obj *model.AuthPayload) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -976,7 +1012,7 @@ func (ec *executionContext) _AuthPayload_user(ctx context.Context, field graphql
 			return obj.User, nil
 		},
 		nil,
-		ec.marshalNUser2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐUser,
+		ec.marshalNUser2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐUser,
 		true,
 		true,
 	)
@@ -1334,7 +1370,7 @@ func (ec *executionContext) _Event_course(ctx context.Context, field graphql.Col
 			return ec.resolvers.Event().Course(ctx, obj)
 		},
 		nil,
-		ec.marshalOCourse2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐCourse,
+		ec.marshalOCourse2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐCourse,
 		true,
 		false,
 	)
@@ -1492,7 +1528,7 @@ func (ec *executionContext) _Mutation_register(ctx context.Context, field graphq
 			return ec.resolvers.Mutation().Register(ctx, fc.Args["input"].(model.RegisterInput))
 		},
 		nil,
-		ec.marshalNAuthPayload2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐAuthPayload,
+		ec.marshalNAuthPayload2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐAuthPayload,
 		true,
 		true,
 	)
@@ -1508,6 +1544,8 @@ func (ec *executionContext) fieldContext_Mutation_register(ctx context.Context, 
 			switch field.Name {
 			case "token":
 				return ec.fieldContext_AuthPayload_token(ctx, field)
+			case "refreshToken":
+				return ec.fieldContext_AuthPayload_refreshToken(ctx, field)
 			case "user":
 				return ec.fieldContext_AuthPayload_user(ctx, field)
 			}
@@ -1539,7 +1577,7 @@ func (ec *executionContext) _Mutation_login(ctx context.Context, field graphql.C
 			return ec.resolvers.Mutation().Login(ctx, fc.Args["input"].(model.LoginInput))
 		},
 		nil,
-		ec.marshalNAuthPayload2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐAuthPayload,
+		ec.marshalNAuthPayload2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐAuthPayload,
 		true,
 		true,
 	)
@@ -1555,6 +1593,8 @@ func (ec *executionContext) fieldContext_Mutation_login(ctx context.Context, fie
 			switch field.Name {
 			case "token":
 				return ec.fieldContext_AuthPayload_token(ctx, field)
+			case "refreshToken":
+				return ec.fieldContext_AuthPayload_refreshToken(ctx, field)
 			case "user":
 				return ec.fieldContext_AuthPayload_user(ctx, field)
 			}
@@ -1586,7 +1626,7 @@ func (ec *executionContext) _Mutation_createCourse(ctx context.Context, field gr
 			return ec.resolvers.Mutation().CreateCourse(ctx, fc.Args["input"].(model.NewCourseInput))
 		},
 		nil,
-		ec.marshalNCourse2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐCourse,
+		ec.marshalNCourse2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐCourse,
 		true,
 		true,
 	)
@@ -1639,7 +1679,7 @@ func (ec *executionContext) _Mutation_createTask(ctx context.Context, field grap
 			return ec.resolvers.Mutation().CreateTask(ctx, fc.Args["input"].(model.NewTaskInput))
 		},
 		nil,
-		ec.marshalNTask2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐTask,
+		ec.marshalNTask2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐTask,
 		true,
 		true,
 	)
@@ -1702,7 +1742,7 @@ func (ec *executionContext) _Mutation_updateTask(ctx context.Context, field grap
 			return ec.resolvers.Mutation().UpdateTask(ctx, fc.Args["input"].(model.UpdateTaskInput))
 		},
 		nil,
-		ec.marshalNTask2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐTask,
+		ec.marshalNTask2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐTask,
 		true,
 		true,
 	)
@@ -1806,7 +1846,7 @@ func (ec *executionContext) _Mutation_createEvent(ctx context.Context, field gra
 			return ec.resolvers.Mutation().CreateEvent(ctx, fc.Args["input"].(model.NewEventInput))
 		},
 		nil,
-		ec.marshalNEvent2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐEvent,
+		ec.marshalNEvent2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐEvent,
 		true,
 		true,
 	)
@@ -1908,7 +1948,7 @@ func (ec *executionContext) _Mutation_updateUser(ctx context.Context, field grap
 			return ec.resolvers.Mutation().UpdateUser(ctx, fc.Args["input"].(model.UpdateUserInput))
 		},
 		nil,
-		ec.marshalNUser2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐUser,
+		ec.marshalNUser2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐUser,
 		true,
 		true,
 	)
@@ -1959,7 +1999,7 @@ func (ec *executionContext) _Mutation_changePassword(ctx context.Context, field 
 			return ec.resolvers.Mutation().ChangePassword(ctx, fc.Args["input"].(model.ChangePasswordInput))
 		},
 		nil,
-		ec.marshalNChangePasswordPayload2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐChangePasswordPayload,
+		ec.marshalNChangePasswordPayload2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐChangePasswordPayload,
 		true,
 		true,
 	)
@@ -2249,7 +2289,7 @@ func (ec *executionContext) _Query_me(ctx context.Context, field graphql.Collect
 			return ec.resolvers.Query().Me(ctx)
 		},
 		nil,
-		ec.marshalNUser2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐUser,
+		ec.marshalNUser2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐUser,
 		true,
 		true,
 	)
@@ -2288,7 +2328,7 @@ func (ec *executionContext) _Query_tasks(ctx context.Context, field graphql.Coll
 			return ec.resolvers.Query().Tasks(ctx)
 		},
 		nil,
-		ec.marshalNTask2ᚕᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐTaskᚄ,
+		ec.marshalNTask2ᚕᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐTaskᚄ,
 		true,
 		true,
 	)
@@ -2339,7 +2379,7 @@ func (ec *executionContext) _Query_courses(ctx context.Context, field graphql.Co
 			return ec.resolvers.Query().Courses(ctx)
 		},
 		nil,
-		ec.marshalNCourse2ᚕᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐCourseᚄ,
+		ec.marshalNCourse2ᚕᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐCourseᚄ,
 		true,
 		true,
 	)
@@ -2380,7 +2420,7 @@ func (ec *executionContext) _Query_events(ctx context.Context, field graphql.Col
 			return ec.resolvers.Query().Events(ctx)
 		},
 		nil,
-		ec.marshalNEvent2ᚕᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐEventᚄ,
+		ec.marshalNEvent2ᚕᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐEventᚄ,
 		true,
 		true,
 	)
@@ -2430,7 +2470,7 @@ func (ec *executionContext) _Query_getTask(ctx context.Context, field graphql.Co
 			return ec.resolvers.Query().GetTask(ctx, fc.Args["id"].(string))
 		},
 		nil,
-		ec.marshalOTask2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐTask,
+		ec.marshalOTask2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐTask,
 		true,
 		false,
 	)
@@ -2493,7 +2533,7 @@ func (ec *executionContext) _Query_getCourse(ctx context.Context, field graphql.
 			return ec.resolvers.Query().GetCourse(ctx, fc.Args["id"].(string))
 		},
 		nil,
-		ec.marshalOCourse2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐCourse,
+		ec.marshalOCourse2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐCourse,
 		true,
 		false,
 	)
@@ -2545,7 +2585,7 @@ func (ec *executionContext) _Query_notifications(ctx context.Context, field grap
 			return ec.resolvers.Query().Notifications(ctx)
 		},
 		nil,
-		ec.marshalNNotification2ᚕᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐNotificationᚄ,
+		ec.marshalNNotification2ᚕᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐNotificationᚄ,
 		true,
 		true,
 	)
@@ -2814,7 +2854,7 @@ func (ec *executionContext) _Task_course(ctx context.Context, field graphql.Coll
 			return ec.resolvers.Task().Course(ctx, obj)
 		},
 		nil,
-		ec.marshalOCourse2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐCourse,
+		ec.marshalOCourse2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐCourse,
 		true,
 		false,
 	)
@@ -4967,6 +5007,11 @@ func (ec *executionContext) _AuthPayload(ctx context.Context, sel ast.SelectionS
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "refreshToken":
+			out.Values[i] = ec._AuthPayload_refreshToken(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "user":
 			out.Values[i] = ec._AuthPayload_user(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -6086,11 +6131,11 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNAuthPayload2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐAuthPayload(ctx context.Context, sel ast.SelectionSet, v model.AuthPayload) graphql.Marshaler {
+func (ec *executionContext) marshalNAuthPayload2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐAuthPayload(ctx context.Context, sel ast.SelectionSet, v model.AuthPayload) graphql.Marshaler {
 	return ec._AuthPayload(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAuthPayload2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐAuthPayload(ctx context.Context, sel ast.SelectionSet, v *model.AuthPayload) graphql.Marshaler {
+func (ec *executionContext) marshalNAuthPayload2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐAuthPayload(ctx context.Context, sel ast.SelectionSet, v *model.AuthPayload) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -6116,16 +6161,16 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalNChangePasswordInput2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐChangePasswordInput(ctx context.Context, v any) (model.ChangePasswordInput, error) {
+func (ec *executionContext) unmarshalNChangePasswordInput2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐChangePasswordInput(ctx context.Context, v any) (model.ChangePasswordInput, error) {
 	res, err := ec.unmarshalInputChangePasswordInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNChangePasswordPayload2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐChangePasswordPayload(ctx context.Context, sel ast.SelectionSet, v model.ChangePasswordPayload) graphql.Marshaler {
+func (ec *executionContext) marshalNChangePasswordPayload2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐChangePasswordPayload(ctx context.Context, sel ast.SelectionSet, v model.ChangePasswordPayload) graphql.Marshaler {
 	return ec._ChangePasswordPayload(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNChangePasswordPayload2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐChangePasswordPayload(ctx context.Context, sel ast.SelectionSet, v *model.ChangePasswordPayload) graphql.Marshaler {
+func (ec *executionContext) marshalNChangePasswordPayload2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐChangePasswordPayload(ctx context.Context, sel ast.SelectionSet, v *model.ChangePasswordPayload) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -6135,11 +6180,11 @@ func (ec *executionContext) marshalNChangePasswordPayload2ᚖgithubᚗcomᚋRand
 	return ec._ChangePasswordPayload(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNCourse2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐCourse(ctx context.Context, sel ast.SelectionSet, v models.Course) graphql.Marshaler {
+func (ec *executionContext) marshalNCourse2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐCourse(ctx context.Context, sel ast.SelectionSet, v models.Course) graphql.Marshaler {
 	return ec._Course(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNCourse2ᚕᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐCourseᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.Course) graphql.Marshaler {
+func (ec *executionContext) marshalNCourse2ᚕᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐCourseᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.Course) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -6163,7 +6208,7 @@ func (ec *executionContext) marshalNCourse2ᚕᚖgithubᚗcomᚋRandithaKᚋStud
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNCourse2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐCourse(ctx, sel, v[i])
+			ret[i] = ec.marshalNCourse2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐCourse(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -6183,7 +6228,7 @@ func (ec *executionContext) marshalNCourse2ᚕᚖgithubᚗcomᚋRandithaKᚋStud
 	return ret
 }
 
-func (ec *executionContext) marshalNCourse2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐCourse(ctx context.Context, sel ast.SelectionSet, v *models.Course) graphql.Marshaler {
+func (ec *executionContext) marshalNCourse2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐCourse(ctx context.Context, sel ast.SelectionSet, v *models.Course) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -6193,11 +6238,11 @@ func (ec *executionContext) marshalNCourse2ᚖgithubᚗcomᚋRandithaKᚋStudyBu
 	return ec._Course(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNEvent2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐEvent(ctx context.Context, sel ast.SelectionSet, v models.Event) graphql.Marshaler {
+func (ec *executionContext) marshalNEvent2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐEvent(ctx context.Context, sel ast.SelectionSet, v models.Event) graphql.Marshaler {
 	return ec._Event(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNEvent2ᚕᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐEventᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.Event) graphql.Marshaler {
+func (ec *executionContext) marshalNEvent2ᚕᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐEventᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.Event) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -6221,7 +6266,7 @@ func (ec *executionContext) marshalNEvent2ᚕᚖgithubᚗcomᚋRandithaKᚋStudy
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNEvent2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐEvent(ctx, sel, v[i])
+			ret[i] = ec.marshalNEvent2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐEvent(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -6241,7 +6286,7 @@ func (ec *executionContext) marshalNEvent2ᚕᚖgithubᚗcomᚋRandithaKᚋStudy
 	return ret
 }
 
-func (ec *executionContext) marshalNEvent2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐEvent(ctx context.Context, sel ast.SelectionSet, v *models.Event) graphql.Marshaler {
+func (ec *executionContext) marshalNEvent2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐEvent(ctx context.Context, sel ast.SelectionSet, v *models.Event) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -6283,27 +6328,27 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 	return res
 }
 
-func (ec *executionContext) unmarshalNLoginInput2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐLoginInput(ctx context.Context, v any) (model.LoginInput, error) {
+func (ec *executionContext) unmarshalNLoginInput2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐLoginInput(ctx context.Context, v any) (model.LoginInput, error) {
 	res, err := ec.unmarshalInputLoginInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewCourseInput2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐNewCourseInput(ctx context.Context, v any) (model.NewCourseInput, error) {
+func (ec *executionContext) unmarshalNNewCourseInput2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐNewCourseInput(ctx context.Context, v any) (model.NewCourseInput, error) {
 	res, err := ec.unmarshalInputNewCourseInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewEventInput2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐNewEventInput(ctx context.Context, v any) (model.NewEventInput, error) {
+func (ec *executionContext) unmarshalNNewEventInput2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐNewEventInput(ctx context.Context, v any) (model.NewEventInput, error) {
 	res, err := ec.unmarshalInputNewEventInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewTaskInput2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐNewTaskInput(ctx context.Context, v any) (model.NewTaskInput, error) {
+func (ec *executionContext) unmarshalNNewTaskInput2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐNewTaskInput(ctx context.Context, v any) (model.NewTaskInput, error) {
 	res, err := ec.unmarshalInputNewTaskInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNNotification2ᚕᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐNotificationᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.Notification) graphql.Marshaler {
+func (ec *executionContext) marshalNNotification2ᚕᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐNotificationᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.Notification) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -6327,7 +6372,7 @@ func (ec *executionContext) marshalNNotification2ᚕᚖgithubᚗcomᚋRandithaK�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNNotification2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐNotification(ctx, sel, v[i])
+			ret[i] = ec.marshalNNotification2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐNotification(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -6347,7 +6392,7 @@ func (ec *executionContext) marshalNNotification2ᚕᚖgithubᚗcomᚋRandithaK�
 	return ret
 }
 
-func (ec *executionContext) marshalNNotification2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐNotification(ctx context.Context, sel ast.SelectionSet, v *models.Notification) graphql.Marshaler {
+func (ec *executionContext) marshalNNotification2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐNotification(ctx context.Context, sel ast.SelectionSet, v *models.Notification) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -6357,7 +6402,7 @@ func (ec *executionContext) marshalNNotification2ᚖgithubᚗcomᚋRandithaKᚋS
 	return ec._Notification(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNRegisterInput2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐRegisterInput(ctx context.Context, v any) (model.RegisterInput, error) {
+func (ec *executionContext) unmarshalNRegisterInput2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐRegisterInput(ctx context.Context, v any) (model.RegisterInput, error) {
 	res, err := ec.unmarshalInputRegisterInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -6378,11 +6423,11 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) marshalNTask2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐTask(ctx context.Context, sel ast.SelectionSet, v models.Task) graphql.Marshaler {
+func (ec *executionContext) marshalNTask2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐTask(ctx context.Context, sel ast.SelectionSet, v models.Task) graphql.Marshaler {
 	return ec._Task(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNTask2ᚕᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐTaskᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.Task) graphql.Marshaler {
+func (ec *executionContext) marshalNTask2ᚕᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐTaskᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.Task) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -6406,7 +6451,7 @@ func (ec *executionContext) marshalNTask2ᚕᚖgithubᚗcomᚋRandithaKᚋStudyB
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNTask2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐTask(ctx, sel, v[i])
+			ret[i] = ec.marshalNTask2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐTask(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -6426,7 +6471,7 @@ func (ec *executionContext) marshalNTask2ᚕᚖgithubᚗcomᚋRandithaKᚋStudyB
 	return ret
 }
 
-func (ec *executionContext) marshalNTask2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐTask(ctx context.Context, sel ast.SelectionSet, v *models.Task) graphql.Marshaler {
+func (ec *executionContext) marshalNTask2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐTask(ctx context.Context, sel ast.SelectionSet, v *models.Task) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -6436,21 +6481,21 @@ func (ec *executionContext) marshalNTask2ᚖgithubᚗcomᚋRandithaKᚋStudyBudd
 	return ec._Task(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNUpdateTaskInput2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐUpdateTaskInput(ctx context.Context, v any) (model.UpdateTaskInput, error) {
+func (ec *executionContext) unmarshalNUpdateTaskInput2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐUpdateTaskInput(ctx context.Context, v any) (model.UpdateTaskInput, error) {
 	res, err := ec.unmarshalInputUpdateTaskInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNUpdateUserInput2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋgraphᚋmodelᚐUpdateUserInput(ctx context.Context, v any) (model.UpdateUserInput, error) {
+func (ec *executionContext) unmarshalNUpdateUserInput2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋgraphᚋmodelᚐUpdateUserInput(ctx context.Context, v any) (model.UpdateUserInput, error) {
 	res, err := ec.unmarshalInputUpdateUserInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNUser2githubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐUser(ctx context.Context, sel ast.SelectionSet, v models.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2githubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐUser(ctx context.Context, sel ast.SelectionSet, v models.User) graphql.Marshaler {
 	return ec._User(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐUser(ctx context.Context, sel ast.SelectionSet, v *models.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐUser(ctx context.Context, sel ast.SelectionSet, v *models.User) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -6743,7 +6788,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) marshalOCourse2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐCourse(ctx context.Context, sel ast.SelectionSet, v *models.Course) graphql.Marshaler {
+func (ec *executionContext) marshalOCourse2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐCourse(ctx context.Context, sel ast.SelectionSet, v *models.Course) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -6780,7 +6825,7 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) marshalOTask2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddyᚋbackendᚋinternalᚋmodelsᚐTask(ctx context.Context, sel ast.SelectionSet, v *models.Task) graphql.Marshaler {
+func (ec *executionContext) marshalOTask2ᚖgithubᚗcomᚋRandithaKᚋStudyBuddy_BackendᚋpkgᚋmodelsᚐTask(ctx context.Context, sel ast.SelectionSet, v *models.Task) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
