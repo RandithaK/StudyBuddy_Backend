@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -12,6 +13,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/RandithaK/StudyBuddy_Backend/graph"
 	"github.com/RandithaK/StudyBuddy_Backend/pkg/auth"
+	"github.com/RandithaK/StudyBuddy_Backend/pkg/email"
 	"github.com/RandithaK/StudyBuddy_Backend/pkg/models"
 	"github.com/RandithaK/StudyBuddy_Backend/pkg/store"
 	"github.com/RandithaK/StudyBuddy_Backend/pkg/worker"

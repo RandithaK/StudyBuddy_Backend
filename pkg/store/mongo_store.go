@@ -476,9 +476,6 @@ func (m *MongoStore) GetUnreadNotificationsOlderThan(duration string) ([]models.
 	return res, nil
 }
 
-	return res, nil
-}
-
 func (m *MongoStore) GetUnreadNotificationsOlderThanForUser(userID string, duration string) ([]models.Notification, error) {
 	col := m.db.Collection("notifications")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

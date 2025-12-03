@@ -254,6 +254,10 @@ func (s *InMemoryStore) GetUnreadNotificationsOlderThan(duration string) ([]mode
 	return []models.Notification{}, nil
 }
 
+func (s *InMemoryStore) GetUnreadNotificationsOlderThanForUser(userID string, duration string) ([]models.Notification, error) {
+	return []models.Notification{}, nil
+}
+
 func (s *InMemoryStore) MarkNotificationAsEmailed(id string) error {
 	return nil
 }
