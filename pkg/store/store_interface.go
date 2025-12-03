@@ -39,6 +39,7 @@ type Store interface {
 	CreateNotification(n models.Notification) models.Notification
 	MarkNotificationAsRead(id string) error
 	GetUnreadNotificationsOlderThan(duration string) ([]models.Notification, error)
+	GetUnreadNotificationsOlderThanForUser(userID string, duration string) ([]models.Notification, error)
 	MarkNotificationAsEmailed(id string) error
 
 	// Worker Helpers

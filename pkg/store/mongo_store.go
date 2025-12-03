@@ -476,6 +476,42 @@ func (m *MongoStore) GetUnreadNotificationsOlderThan(duration string) ([]models.
 	return res, nil
 }
 
+	return res, nil
+}
+
+func (m *MongoStore) GetUnreadNotificationsOlderThanForUser(userID string, duration string) ([]models.Notification, error) {
+	col := m.db.Collection("notifications")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	d, err := time.ParseDuration(duration)
+	if err != nil {
+		return nil, err
+	}
+	cutoff := time.Now().Add(-d).Format(time.RFC3339)
+
+	filter := bson.M{
+		"userId":    userID,
+		"read":      false,
+		"emailed":   false,
+		"createdAt": bson.M{"$lt": cutoff},
+	}
+
+	cur, err := col.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cur.Close(ctx)
+	var res []models.Notification
+	for cur.Next(ctx) {
+		var n models.Notification
+		if err := cur.Decode(&n); err == nil {
+			res = append(res, n)
+		}
+	}
+	return res, nil
+}
+
 func (m *MongoStore) MarkNotificationAsEmailed(id string) error {
 	col := m.db.Collection("notifications")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

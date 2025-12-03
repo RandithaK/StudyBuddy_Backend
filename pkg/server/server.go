@@ -113,27 +113,53 @@ func SetupRouter(s store.Store) *mux.Router {
         `))
 	}).Methods(http.MethodGet)
 
-	// Cron endpoint for Vercel
-	r.HandleFunc("/api/cron/process-notifications", func(w http.ResponseWriter, r *http.Request) {
-		// Simple security check using a shared secret
-		// Vercel Cron automatically adds Authorization header if configured, but we can also use a query param or custom header
-		// For simplicity, we'll check for a CRON_SECRET env var if it exists
-		cronSecret := os.Getenv("CRON_SECRET")
-		authHeader := r.Header.Get("Authorization")
-		if cronSecret != "" && authHeader != "Bearer "+cronSecret {
+	// Client-triggered email fallback (called by app background fetch)
+	r.HandleFunc("/api/notifications/check-email-fallback", func(w http.ResponseWriter, r *http.Request) {
+		// Get UserID from context (set by authMiddleware)
+		userID, ok := r.Context().Value(auth.UserIDKey).(string)
+		if !ok || userID == "" {
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
 
-		// Run the worker logic once
-		wrk := worker.NewWorker(s)
-		wrk.CheckUpcomingTasks()
-		wrk.CheckUpcomingEvents()
-		wrk.CheckUnreadNotifications()
+		// Get unread notifications older than 1 hour for this user
+		notifications, err := s.GetUnreadNotificationsOlderThanForUser(userID, "1h")
+		if err != nil {
+			log.Printf("Error getting unread notifications for user %s: %v", userID, err)
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+
+		user, err := s.GetUser(userID)
+		if err != nil {
+			http.Error(w, "User not found", http.StatusNotFound)
+			return
+		}
+
+		if !user.IsVerified {
+			// Just mark as emailed to avoid repeated checks
+			for _, n := range notifications {
+				s.MarkNotificationAsEmailed(n.ID)
+			}
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("User not verified, skipped emails"))
+			return
+		}
+
+		count := 0
+		for _, n := range notifications {
+			err = email.SendNotificationEmail(user.Email, "You have an unread notification", n.Message)
+			if err != nil {
+				log.Printf("Error sending email to %s: %v", user.Email, err)
+				continue
+			}
+			s.MarkNotificationAsEmailed(n.ID)
+			count++
+		}
 
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("Notifications processed"))
-	}).Methods(http.MethodGet)
+		fmt.Fprintf(w, "Processed %d notifications", count)
+	}).Methods(http.MethodPost)
 
 	// GraphQL playground and handlers
 	r.Handle("/", playground.Handler("GraphQL playground", "/query"))
