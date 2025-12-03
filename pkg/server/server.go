@@ -113,6 +113,28 @@ func SetupRouter(s store.Store) *mux.Router {
         `))
 	}).Methods(http.MethodGet)
 
+	// Cron endpoint for Vercel
+	r.HandleFunc("/api/cron/process-notifications", func(w http.ResponseWriter, r *http.Request) {
+		// Simple security check using a shared secret
+		// Vercel Cron automatically adds Authorization header if configured, but we can also use a query param or custom header
+		// For simplicity, we'll check for a CRON_SECRET env var if it exists
+		cronSecret := os.Getenv("CRON_SECRET")
+		authHeader := r.Header.Get("Authorization")
+		if cronSecret != "" && authHeader != "Bearer "+cronSecret {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+
+		// Run the worker logic once
+		wrk := worker.NewWorker(s)
+		wrk.CheckUpcomingTasks()
+		wrk.CheckUpcomingEvents()
+		wrk.CheckUnreadNotifications()
+
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Notifications processed"))
+	}).Methods(http.MethodGet)
+
 	// GraphQL playground and handlers
 	r.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	r.Handle("/query", srv)
